@@ -1,0 +1,260 @@
+package main.java.impl;
+
+import engine.Engine;
+import engine.enums.NodeType;
+import engine.exceptions.VisualizationNotFoundException;
+import engine.interfaces.IEdge;
+import engine.interfaces.INode;
+import engine.interfaces.ISolution;
+import engine.results.NodeResult;
+import engine.results.Result;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Random;
+
+public class DNA_Node implements Comparable<DNA_Node> {
+    private double fitness;
+    private int heigth;
+    private int width;
+    private ArrayList<INode> nodeList;
+    private Engine eng;
+
+
+    public DNA_Node(Engine eng, ArrayList<INode> nodeList) {
+        this.heigth = eng.getVirusConfiguration().getHeigth();
+        this.width = eng.getVirusConfiguration().getWidth();
+        this.eng = eng;
+        this.nodeList = nodeList;
+    }
+
+    public DNA_Node(Engine eng) {
+        this.heigth = eng.getVirusConfiguration().getHeigth();
+        this.width = eng.getVirusConfiguration().getWidth();
+        this.eng = eng;
+        this.nodeList = new ArrayList<>();
+        if (nodeList.size() == 0) {
+            DNA();
+
+            calcNodeXYFitness();
+        }
+    }
+
+    public double getFitness() {
+        return fitness;
+    }
+
+    public void setFitness(double fitness) {
+        this.fitness = fitness;
+    }
+
+    public int getHeigth() {
+        return heigth;
+    }
+
+    public void setHeigth(int heigth) {
+        this.heigth = heigth;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public ArrayList<INode> getNodeList() {
+        return nodeList;
+    }
+
+    public void setNodeList(ArrayList<INode> nodeList) {
+        this.nodeList = nodeList;
+    }
+
+    public void DNA() {
+
+        int inicioX = eng.getVirusConfiguration().getX_origin();
+        int inicioY = eng.getVirusConfiguration().getY_origin();
+        int fimX = eng.getVirusConfiguration().getX_origin() + heigth;
+        int fimY = eng.getVirusConfiguration().getY_origin() + width;
+        int label = 0;
+
+        for (int i = inicioX; i <= fimX; i++) {
+            for (int j = inicioY; j <= fimY; j++) {
+                double rand = randomDouble();
+                if (rand < 0.6) {
+                    label++;
+                    INode node = randNode(label, i, j);
+                    nodeList.add(node);
+                }
+            }
+        }
+    }
+
+    public int randInt(int lowerbound, int upperbound) {
+        int int_random = lowerbound + (int) (Math.random() * (upperbound - lowerbound));
+        return int_random;
+    }
+
+    private GraphNode randNode(int label, int heigthI, int widthJ) {
+        GraphNode randN = new GraphNode(randType(), label, heigthI, widthJ);
+        return randN;
+    }
+
+    private NodeType randType() {
+        Random random = new Random();
+        int randNum = random.nextInt(NodeType.values().length);
+
+        return NodeType.values()[randNum];
+    }
+
+    private Result getResultToTest() {
+        ArrayList<IEdge> dummyEdges = new ArrayList<>();
+        ISolution solutionNodes = new impl.Solution(nodeList, dummyEdges, eng.getVirusConfiguration());
+        eng.testSolution(solutionNodes);
+        Result result = eng.testSolution(solutionNodes);
+        return result;
+    }
+
+    public void updateVisualization() throws VisualizationNotFoundException {
+        ArrayList<IEdge> dummyEdges = new ArrayList<>();
+        ISolution solutionNodes = new impl.Solution(nodeList, dummyEdges, eng.getVirusConfiguration());
+        eng.updateVisualization("viz1", solutionNodes);
+    }
+
+    public void calcNodeXYFitness() {
+        Result result = getResultToTest();
+        double count_ok = 0;
+
+        Iterator iterator = nodeList.iterator();
+        while (iterator.hasNext()) {
+            INode node = (INode) iterator.next();
+            NodeResult nodeResult = result.getResultForNode(node.getLabel());
+            if (nodeResult.isIs_x_ok() && nodeResult.isIs_y_ok()) {
+                count_ok = count_ok + 0.01;
+            }
+        }
+        setFitness(count_ok);
+    }
+
+    public void calcNodeTypeFitness() {
+        Result result = getResultToTest();
+        double count_ok = 0;
+
+        Iterator iterator = nodeList.iterator();
+        while (iterator.hasNext()) {
+            INode node = (INode) iterator.next();
+            NodeResult nodeResult = result.getResultForNode(node.getLabel());
+            if (nodeResult.isOk()){
+                count_ok = count_ok + 0.01;;
+            }
+        }
+        setFitness(count_ok);
+    }
+
+
+    public void removeUselessXYNodes() {
+        Result result = getResultToTest();
+
+        Iterator it = getNodeList().iterator();
+        while (it.hasNext()) {
+            INode node = (INode) it.next();
+            NodeResult nodeResult = result.getResultForNode(node.getLabel());
+            if (!nodeResult.isIs_y_ok() || !nodeResult.isIs_x_ok()) {
+                it.remove();
+            }
+        }
+    }
+
+    public double randomDouble() {
+        Random rn = new Random();
+        double result = rn.nextDouble() * 1;
+        return result;
+    }
+
+    public void mutateType(double mutationFreq) {
+        Iterator it = nodeList.iterator();
+        while (it.hasNext()) {
+            INode node = (INode) it.next();
+            double ranDouble = randomDouble();
+            if (ranDouble < mutationFreq) {
+                node.setType(randType());
+            }
+        }
+    }
+
+    public void mutateXY(double mutationFreq) {
+
+        int inicioX = eng.getVirusConfiguration().getX_origin();
+        int inicioY = eng.getVirusConfiguration().getY_origin();
+        int fimX = eng.getVirusConfiguration().getX_origin() + heigth;
+        int fimY = eng.getVirusConfiguration().getY_origin() + width;
+
+        for (int i = 0; i < getNodeList().size(); i++) {
+            INode tempNode = new GraphNode(getNodeList().get(i));
+
+            double ranDouble = randomDouble();
+            if (ranDouble < mutationFreq) {
+                int x = randInt(inicioX, fimX);
+                tempNode.setX(x);
+            }
+            double ranDouble1 = randomDouble();
+            if (ranDouble1 < mutationFreq) {
+                int y = randInt(inicioY, fimY);
+                tempNode.setY(y);
+            }
+
+            if (!contemNodeXY(tempNode)) {
+                getNodeList().set(i, tempNode);
+            }
+        }
+    }
+
+    public boolean contemNodeXY(INode node) {
+        boolean igual = false;
+        Iterator it = nodeList.iterator();
+        while (it.hasNext()) {
+            INode tempNode = (INode) it.next();
+            if (tempNode.getX() == node.getX() && tempNode.getY() == node.getY())
+                igual = true;
+        }
+        return igual;
+    }
+
+    public ArrayList<INode> cloneList() {
+        ArrayList<INode> novaLista = new ArrayList<>();
+        Iterator iterator = getNodeList().iterator();
+        while (iterator.hasNext()) {
+            INode node = (GraphNode) iterator.next();
+            novaLista.add(new GraphNode(node.getType(), node.getLabel(), node.getX(), node.getY()));
+        }
+        return novaLista;
+    }
+
+    @Override
+    public String toString() {
+        String s = "";
+        s = "Nodes do virus { " + "fitness=" + fitness + " tamanho " + getNodeList().size() + "}\n";
+
+       /*Iterator it = nodeList.iterator();
+        while (it.hasNext()) {
+            INode node = (INode) it.next();
+            s = s + "Label |" + node.getLabel() + " | Type - " + node.getType() + " Y - " + node.getY() + " X - " + node.getX() + "\n";
+        }*/
+        return s;
+    }
+
+    @Override
+    public int compareTo(DNA_Node o) {
+        DNA_Node tmp = (DNA_Node) o;
+        if (getFitness() > tmp.getFitness()) {
+            return -1;
+        } else if (this.getFitness() < tmp.getFitness()) {
+            return 1;
+        }
+        return 0;
+
+    }
+
+}

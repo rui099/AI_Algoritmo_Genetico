@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="TP_AC">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/TP_AC.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/TP_AC.jar!/" />
+    </SOURCES>
+  </library>
+</component>
