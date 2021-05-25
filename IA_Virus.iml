@@ -9,5 +9,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="TP_AC" level="project" />
     <orderEntry type="library" name="TP_AC (2)" level="project" />
+    <orderEntry type="library" name="poi-4.1.2" level="project" />
+    <orderEntry type="library" name="commons-lang3-3.1" level="project" />
+    <orderEntry type="library" name="commons-math3" level="project" />
   </component>
 </module>

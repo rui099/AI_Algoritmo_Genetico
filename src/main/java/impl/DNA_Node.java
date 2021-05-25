@@ -235,7 +235,7 @@ public class DNA_Node implements Comparable<DNA_Node> {
     @Override
     public String toString() {
         String s = "";
-        s = "Nodes do virus { " + "fitness=" + fitness + " tamanho " + getNodeList().size() + "}\n";
+        s = "Nodes do virus { " + "fitness=" + fitness  + "}\n";
 
        /*Iterator it = nodeList.iterator();
         while (it.hasNext()) {

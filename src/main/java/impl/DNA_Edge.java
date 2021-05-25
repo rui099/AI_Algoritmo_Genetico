@@ -21,11 +21,11 @@ public class DNA_Edge implements Comparable<DNA_Edge> {
     private double fitness;
     private Engine eng;
 
-    public DNA_Edge(ArrayList<INode> nodelist, Engine eng) {
+    public DNA_Edge(double percentagem,ArrayList<INode> nodelist, Engine eng) {
         this.nodelist = nodelist;
         this.edgeList = new ArrayList<>();
         this.eng = eng;
-        DNA();
+        DNA(percentagem);
     }
 
     public DNA_Edge(ArrayList<INode> nodelist, ArrayList<IEdge> edgeList, Engine eng) {
@@ -75,13 +75,12 @@ public class DNA_Edge implements Comparable<DNA_Edge> {
         return int_random;
     }
 
-    public void DNA(){
+    public void DNA(double percentagem){
         int nNodes = getNodelist().size();
         //int nEdges = eng.getVirusConfiguration().getN_edges();
-        int divisão = 2;
+
         int i =0;
-        double numMaxEdges = (nNodes*(nNodes-1))/2;
-        double percentagem = 0.6;
+        double numMaxEdges = ((nNodes*(nNodes-1))/2) + nNodes;
         int numDeElem = (int) (percentagem * numMaxEdges);
 
         while(getEdgeList().size() < numDeElem){

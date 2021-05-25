@@ -3,6 +3,8 @@ package main.java.impl;
 import engine.Engine;
 import engine.exceptions.VisualizationNotFoundException;
 
+import main.Exceptions.EdgesNotFoundException;
+import main.Exceptions.IncompleteNodesException;
 import main.Exceptions.XYNotFoundException;
 
 import java.util.*;
@@ -175,14 +177,17 @@ public class Population {
         setBestXY(new DNA_Node(eng,dna.cloneList()));
     }
 
-    public void prepararListaPTipo(){
+    public void prepararListaPTipo()throws XYNotFoundException {
+        if(!isAcabouNodeXY())
+            throw new XYNotFoundException("O X e Y dos nodes têm que ser encontrados antes do tipo");
+
         for (int i = 0; i < this.populationNodeList.size(); i++) {
             DNA_Node novoDNA = new DNA_Node(eng, getBestXY().cloneList());
             populationNodeList.set(i, novoDNA);
         }
     }
 
-    public ArrayList<DNA_Node> elitismoNodeList() {
+    private ArrayList<DNA_Node> elitismoNodeList() {
         ArrayList<DNA_Node> best = new ArrayList<>();
         Collections.sort(populationNodeList);
         for (int i = 0; i < elitismoSize; i++) {
@@ -193,7 +198,7 @@ public class Population {
         return best;
     }
 
-    public ArrayList<DNA_Edge> elitismoEdgeList() {
+    private ArrayList<DNA_Edge> elitismoEdgeList() {
         ArrayList<DNA_Edge> best = new ArrayList<>();
         Collections.sort(populationEdgeList);
         for (int i = 0; i < elitismoSize; i++) {
@@ -204,7 +209,7 @@ public class Population {
         return best;
     }
 
-    public int randInt(int upperbound) {
+    private int randInt(int upperbound) {
         Random rand = new Random(); //instance of random class
         int int_random = rand.nextInt(upperbound);
         return int_random;
@@ -269,11 +274,14 @@ public class Population {
         populationNodeList.get(0).updateVisualization();
     }
 
-    public void genEdgeNodePop() throws XYNotFoundException {
+    public void genEdgeNodePop(double percentagem) throws IncompleteNodesException {
+        if(!isAcabouNodeXY() && !isAcabouNodeType())
+            throw new IncompleteNodesException("Os Nodes não foram totalmente encontrados !");
+
         if(this.populationEdgeList.size() == 0) {
             setRepCounter(0);
             for (int i = 0; i < getPopulationSize(); i++) {
-                populationEdgeList.add(new DNA_Edge(getcompleteNodeDNA().cloneList(), eng));
+                populationEdgeList.add(new DNA_Edge(percentagem, getcompleteNodeDNA().cloneList(), eng));
             }
         }else {
             ArrayList<DNA_Edge> elitismo = elitismoEdgeList();
@@ -290,7 +298,10 @@ public class Population {
         }
     }
 
-    public void calcEdgeNodeFitness() {
+    public void calcEdgeNodeFitness() throws IncompleteNodesException {
+        if(!isAcabouNodeXY() && !isAcabouNodeType())
+            throw new IncompleteNodesException("Os Nodes não foram totalmente encontrados !");
+
         Collections.sort(populationEdgeList);
         Iterator iterator = populationEdgeList.iterator();
         while (iterator.hasNext()) {
@@ -305,9 +316,10 @@ public class Population {
 
     }
 
-    public void mutatePopulationEdgeNode() throws XYNotFoundException {
-        if(!isAcabouNodeXY())
-            throw new XYNotFoundException("O X e Y dos nodes têm que ser encontrados antes do tipo");
+    public void mutatePopulationEdgeNode() throws IncompleteNodesException {
+        if(!isAcabouNodeXY() && !isAcabouNodeType())
+            throw new IncompleteNodesException("Os Nodes não foram totalmente encontrados !");
+
         for (int i = elitismoSize; i < this.populationEdgeList.size(); i++) {
             populationEdgeList.get(i).mutateEdgeNodes(this.nodeMutationFreq);
         }
@@ -319,7 +331,10 @@ public class Population {
         setBestNodeEdges(new DNA_Edge(dna.getNodelist(),dna.cloneList(),eng));
     }
 
-    public void prepararListaPPeso(){
+    public void prepararListaPPeso()throws EdgesNotFoundException {
+        if(!isAcabouEdgeNodes())
+            throw new EdgesNotFoundException("As Edges não foram totalmente encontradas !");
+
         setRepCounter(0);
         for (int i = 0; i < this.populationEdgeList.size(); i++) {
             DNA_Edge novoDNA = new DNA_Edge(getBestNodeEdges().getNodelist(),getBestNodeEdges().cloneList(),eng);
@@ -333,9 +348,9 @@ public class Population {
 
     }
 
-    public void genWeightPop() throws XYNotFoundException {
-        if (!isAcabouEdgeNodes())
-            throw new XYNotFoundException("O X e Y dos nodes têm que ser encontrados antes do tipo");
+    public void genWeightPop() throws EdgesNotFoundException {
+        if(!isAcabouEdgeNodes())
+            throw new EdgesNotFoundException("As Edges não foram totalmente encontradas !");
         ArrayList<DNA_Edge> elitismo = elitismoEdgeList();
         int upperbound = elitismo.size();
 
@@ -351,9 +366,9 @@ public class Population {
     }
 
 
-    public void calcWeightFitness() throws XYNotFoundException {
-        if(!isAcabouNodeXY())
-            throw new XYNotFoundException("O X e Y dos nodes têm que ser encontrados antes do tipo");
+    public void calcWeightFitness() throws EdgesNotFoundException {
+        if(!isAcabouEdgeNodes())
+            throw new EdgesNotFoundException("As Edges não foram totalmente encontradas !");
 
         Collections.sort(populationEdgeList);
         Iterator iterator = populationEdgeList.iterator();
@@ -368,9 +383,9 @@ public class Population {
         }
     }
 
-    public void mutatePopulationWeight() throws XYNotFoundException {
-        if(!isAcabouNodeXY())
-            throw new XYNotFoundException("O X e Y dos nodes têm que ser encontrados antes do tipo");
+    public void mutatePopulationWeight() throws EdgesNotFoundException {
+        if(!isAcabouEdgeNodes())
+            throw new EdgesNotFoundException("As Edges não foram totalmente encontradas !");
         for (int i = elitismoSize; i < this.populationEdgeList.size(); i++) {
             populationEdgeList.get(i).mutateWeight(this.nodeMutationFreq);
         }
