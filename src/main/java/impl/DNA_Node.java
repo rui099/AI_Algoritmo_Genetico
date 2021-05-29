@@ -71,6 +71,9 @@ public class DNA_Node implements Comparable<DNA_Node> {
     public void setNodeList(ArrayList<INode> nodeList) {
         this.nodeList = nodeList;
     }
+    /**
+     * Metodo responsavel por gerar o X e Y quando a classe é instanciada.
+     */
 
     public void DNA() {
 
@@ -92,15 +95,35 @@ public class DNA_Node implements Comparable<DNA_Node> {
         }
     }
 
+    /**
+     * Metodo responsavel por gerar um numero entre a lowerbound e a upperbound.
+     * @param lowerbound
+     * @param upperbound
+     * @return um numero entre lowerbound e upperbound
+     */
+
     public int randInt(int lowerbound, int upperbound) {
         int int_random = lowerbound + (int) (Math.random() * (upperbound - lowerbound));
         return int_random;
     }
 
-    private GraphNode randNode(int label, int heigthI, int widthJ) {
-        GraphNode randN = new GraphNode(randType(), label, heigthI, widthJ);
+    /**
+     * Metodo responsavel por criar um node com type radom e label , x e y recebidos.
+     * @param label
+     * @param x
+     * @param y
+     * @return retorna um node com x ,y e label racebidos e type á sorte.
+     */
+
+    private GraphNode randNode(int label, int x, int y) {
+        GraphNode randN = new GraphNode(randType(), label, x, y);
         return randN;
     }
+
+    /**
+     * Metodo responsavel por gerar um type á sorte.
+     * @return retorna uma posição random no enum dos NodeTypes.
+     */
 
     private NodeType randType() {
         Random random = new Random();
@@ -108,6 +131,12 @@ public class DNA_Node implements Comparable<DNA_Node> {
 
         return NodeType.values()[randNum];
     }
+
+    /**
+     * Metodo responsavel por criar uma solução de teste com a lista de nodes e uma lista de edges vazia
+     * feito com a intenção de não repetir codigo.
+     * @return uma instancia de Result pronto a ser usada.
+     */
 
     private Result getResultToTest() {
         ArrayList<IEdge> dummyEdges = new ArrayList<>();
@@ -117,12 +146,19 @@ public class DNA_Node implements Comparable<DNA_Node> {
         return result;
     }
 
+    /**
+     * Metodo responsavel por fazer um update á visualização do virus a ser usado.
+     */
     public void updateVisualization() throws VisualizationNotFoundException {
         ArrayList<IEdge> dummyEdges = new ArrayList<>();
         ISolution solutionNodes = new impl.Solution(nodeList, dummyEdges, eng.getVirusConfiguration());
         eng.updateVisualization("viz1", solutionNodes);
     }
 
+    /**
+     * Metodo responsavel por calcular o fitness para o X e Y dos nodes, quando calculado insere o valor na
+     * variavel responsabel por guardar o valor do fitness
+     */
     public void calcNodeXYFitness() {
         Result result = getResultToTest();
         double count_ok = 0;
@@ -138,6 +174,10 @@ public class DNA_Node implements Comparable<DNA_Node> {
         setFitness(count_ok);
     }
 
+    /**
+     * Metodo responsavel por calcular o fitness para o Type dos nodes, quando calculado insere o valor na
+     * variavel responsabel por guardar o valor do fitness
+     */
     public void calcNodeTypeFitness() {
         Result result = getResultToTest();
         double count_ok = 0;
@@ -153,6 +193,9 @@ public class DNA_Node implements Comparable<DNA_Node> {
         setFitness(count_ok);
     }
 
+    /**
+     * Metodo responsavel por remover os nodes inuteis da solução.
+     */
 
     public void removeUselessXYNodes() {
         Result result = getResultToTest();
@@ -167,11 +210,22 @@ public class DNA_Node implements Comparable<DNA_Node> {
         }
     }
 
+    /**
+     * Metodo responsavel por gerar um numero do tipo Double de 0 a 1
+     * @return numero de zero a 1
+     */
+
     public double randomDouble() {
         Random rn = new Random();
         double result = rn.nextDouble() * 1;
         return result;
     }
+
+    /**
+     * Metodo responsavel por mutar o type do node, itera a lista de nodes e se um numero Double random for maior que
+     * a frequencia de mutação o type do node é mutado
+     * @param mutationFreq - frequencia de mutação
+     */
 
     public void mutateType(double mutationFreq) {
         Iterator it = nodeList.iterator();
@@ -184,6 +238,11 @@ public class DNA_Node implements Comparable<DNA_Node> {
         }
     }
 
+    /**
+     * Metodo responsavel por mutar o type do node, itera a lista de nodes e se um numero Double random for maior que
+     * a frequencia de mutação o X do node é mutado e depois é feito o mesmo para o y.
+     * @param mutationFreq - frequencia de mutação
+     */
     public void mutateXY(double mutationFreq) {
 
         int inicioX = eng.getVirusConfiguration().getX_origin();
@@ -211,6 +270,11 @@ public class DNA_Node implements Comparable<DNA_Node> {
         }
     }
 
+    /**
+     * Metodo responsavel por verificar se existe um node com o mesmo X e Y do node que recebe
+     * @param node - node a procurar na lista
+     */
+
     public boolean contemNodeXY(INode node) {
         boolean igual = false;
         Iterator it = nodeList.iterator();
@@ -222,6 +286,10 @@ public class DNA_Node implements Comparable<DNA_Node> {
         return igual;
     }
 
+    /**
+     * Metodo responsavel por retornar um clone da lista de nodes
+     * @return novaLista - clone da lista de nodes
+     */
     public ArrayList<INode> cloneList() {
         ArrayList<INode> novaLista = new ArrayList<>();
         Iterator iterator = getNodeList().iterator();

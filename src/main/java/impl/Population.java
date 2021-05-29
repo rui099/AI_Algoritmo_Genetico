@@ -136,7 +136,9 @@ public class Population {
     public int getNumMaxRep() {
         return numMaxRep;
     }
-
+    /**
+     * Metodo responsavel por calcular o fitness de todos os XY dos nodes e verificar se chegou ao criterio de paragem
+     */
     public void calcNodeFitness() {
         Iterator iterator = populationNodeList.iterator();
         while (iterator.hasNext()) {
@@ -152,7 +154,10 @@ public class Population {
             } //calcular fitness do tipo
         }
     }
-
+    /**
+     * Metodo responsavel por calcular o fitness dos types de todos os cromossomas
+     * @throws @XYNotFoundException - o X e Y dos nodes tem que ser encontrado primeiro.
+     */
     public void calcTypeFitness() throws XYNotFoundException {
         if(!isAcabouNodeXY())
             throw new XYNotFoundException("O X e Y dos nodes têm que ser encontrados antes do tipo");
@@ -170,13 +175,22 @@ public class Population {
         }
 
     }
-
+    /**
+     * Metodo responsavel por dar guardar true na variavel AcabouNodeXY, remove os nodes errados do dna recebido
+     * e inserir na variavel BestXY o dna recebido,este metodo é usado no metodo calcNodeFitness()
+     * @param dna - cromossoma com maior fitness na ultima iteração
+     */
     private void endNodeSearch(DNA_Node dna){
         setAcabouNodeXY(true);
         dna.removeUselessXYNodes();
         setBestXY(new DNA_Node(eng,dna.cloneList()));
     }
 
+    /**
+     * Metodo responsavel por substituir todos os cromossomas usados para encontrar o X e Y por clones
+     * do melhor cromossoma, para depois encontrar o type
+     * @throws XYNotFoundException - se o X e Y não tiverem sido encontrados anteriormente
+     */
     public void prepararListaPTipo()throws XYNotFoundException {
         if(!isAcabouNodeXY())
             throw new XYNotFoundException("O X e Y dos nodes têm que ser encontrados antes do tipo");
@@ -186,7 +200,10 @@ public class Population {
             populationNodeList.set(i, novoDNA);
         }
     }
-
+    /**
+     * Metodo responsavel por retornar uma lista com os cromossomas de nodes com o fitness melhor da população
+     * @return ArrayList com os melhores cromossomas.
+     */
     private ArrayList<DNA_Node> elitismoNodeList() {
         ArrayList<DNA_Node> best = new ArrayList<>();
         Collections.sort(populationNodeList);
@@ -197,7 +214,10 @@ public class Population {
         fitnessRepCounter(populationNodeList.get(0).getFitness());
         return best;
     }
-
+    /**
+     * Metodo responsavel por retornar uma lista com os cromossomas de edges com o fitness melhor da população
+     * @return ArrayList com os melhores cromossomas.
+     */
     private ArrayList<DNA_Edge> elitismoEdgeList() {
         ArrayList<DNA_Edge> best = new ArrayList<>();
         Collections.sort(populationEdgeList);
@@ -209,12 +229,19 @@ public class Population {
         return best;
     }
 
+    /**
+     * Metodo responsavel por gerar um intiro de 0 até upperbound
+     * @return  um numero inteiro de 0 a upperbound
+     */
     private int randInt(int upperbound) {
         Random rand = new Random(); //instance of random class
         int int_random = rand.nextInt(upperbound);
         return int_random;
     }
 
+    /**
+     * Metodo responsavel por gerar uma poopulação para encontrar os X e Y dos nodes
+     */
     public void genNodeXYPop() {
         if(this.populationNodeList.size() == 0) {
             for (int i = 0; i < getPopulationSize(); i++) {
@@ -236,7 +263,10 @@ public class Population {
         }
     }
 
-
+    /**
+     * Metodo responsavel por gerar uma poopulação para encontrar o type dos nodes
+     * @throws XYNotFoundException - se não tiverem sido encontrados os X e Y dos nodes
+     */
     public void genNodeTypePop() throws XYNotFoundException {
         if(!isAcabouNodeXY())
             throw new XYNotFoundException("O X e Y dos nodes têm que ser encontrados antes do tipo");
@@ -255,12 +285,18 @@ public class Population {
             }
     }
 
+    /**
+     * Metodo responsavel por mutar o X e Y de cada cromossoma de nodes
+     */
     public void mutatePopulationXY() {
         for (int i = elitismoSize; i < this.populationNodeList.size(); i++) {
             populationNodeList.get(i).mutateXY(this.nodeMutationFreq);
         }
     }
 
+    /**
+     * Metodo responsavel por mutar o type de cada cromossoma de nodes
+     */
     public void mutatePopulationType() throws XYNotFoundException {
         if(!isAcabouNodeXY())
             throw new XYNotFoundException("O X e Y dos nodes têm que ser encontrados antes do tipo");
@@ -269,11 +305,19 @@ public class Population {
         }
     }
 
+    /**
+     * Metodo responsavel por fazer m update de visualização usando o cromossoma com maior fitness
+     * da população de nodes
+     */
     public void visualizationNodePop() throws VisualizationNotFoundException {
         Collections.sort(populationNodeList);
         populationNodeList.get(0).updateVisualization();
     }
 
+    /**
+     * Metodo responsavel por gerar uma poopulação para encontrar as edges entre os nodes.
+     * @throws IncompleteNodesException - se não tiverem sido encontrados os X, Ye o type dos nodes
+     */
     public void genEdgeNodePop(double percentagem) throws IncompleteNodesException {
         if(!isAcabouNodeXY() && !isAcabouNodeType())
             throw new IncompleteNodesException("Os Nodes não foram totalmente encontrados !");
@@ -298,6 +342,11 @@ public class Population {
         }
     }
 
+    /**
+     * Metodo responsavel por calcular o fitness das edges de todos os cromossomas, e verificr se chegou ao
+     * criterio de paragem.
+     * @throws IncompleteNodesException - se não tiverem sido encontrados os X, Ye o type dos nodes.
+     */
     public void calcEdgeNodeFitness() throws IncompleteNodesException {
         if(!isAcabouNodeXY() && !isAcabouNodeType())
             throw new IncompleteNodesException("Os Nodes não foram totalmente encontrados !");
@@ -316,6 +365,10 @@ public class Population {
 
     }
 
+    /**
+     * Metodo responsavel por mutar as edges de cada cromossoma de edges
+     * @throws IncompleteNodesException - se não tiverem sido encontrados os X, Ye o type dos nodes.
+     */
     public void mutatePopulationEdgeNode() throws IncompleteNodesException {
         if(!isAcabouNodeXY() && !isAcabouNodeType())
             throw new IncompleteNodesException("Os Nodes não foram totalmente encontrados !");
@@ -325,12 +378,22 @@ public class Population {
         }
     }
 
+    /**
+     * Metodo responsavel por dar guardar true na variavel AcabouEdgeNodes, remove as edges errados do dna recebido
+     * e insere na variavel BestNodeEdges o dna recebido,este metodo é usado no metodo calcEdgeNodeFitness()
+     * @param dna - cromossoma com maior fitness na ultima iteração
+     */
     private void endNodeEdgeSearch(DNA_Edge dna){
         setAcabouEdgeNodes(true);
         dna.removeUselessEdgeNodes();
         setBestNodeEdges(new DNA_Edge(dna.getNodelist(),dna.cloneList(),eng));
     }
 
+    /**
+     * Metodo responsavel por substituir todos os cromossomas usados para encontrar o X e Y por clones
+     * do melhor cromossoma, para depois encontrar o type
+     * @throws EdgesNotFoundException - se as edges não tiverem sido encontradas anteriormente
+     */
     public void prepararListaPPeso()throws EdgesNotFoundException {
         if(!isAcabouEdgeNodes())
             throw new EdgesNotFoundException("As Edges não foram totalmente encontradas !");
@@ -341,13 +404,20 @@ public class Population {
             populationEdgeList.set(i, novoDNA);
         }
     }
-
+    /**
+     * Metodo responsavel por fazer m update de visualização usando o cromossoma com maior fitness
+     * da população de edges
+     */
     public void visualizationEdgePop() throws VisualizationNotFoundException {
         Collections.sort(populationEdgeList);
         populationEdgeList.get(0).updateVisualization();
 
     }
 
+    /**
+     * Metodo responsavel por gerar uma poopulação para encontrar os weights das edges.
+     * @throws EdgesNotFoundException - se as edges não tiverem sido encontradas anteriormente
+     */
     public void genWeightPop() throws EdgesNotFoundException {
         if(!isAcabouEdgeNodes())
             throw new EdgesNotFoundException("As Edges não foram totalmente encontradas !");
@@ -365,7 +435,11 @@ public class Population {
         }
     }
 
-
+    /**
+     * Metodo responsavel por calcular o fitness dos weights das edges de todos os cromossomas, e
+     * verificr se chegou ao criterio de paragem.
+     * @throws EdgesNotFoundException - se as edges não tiverem sido encontradas anteriormente
+     */
     public void calcWeightFitness() throws EdgesNotFoundException {
         if(!isAcabouEdgeNodes())
             throw new EdgesNotFoundException("As Edges não foram totalmente encontradas !");
@@ -383,6 +457,10 @@ public class Population {
         }
     }
 
+    /**
+     * Metodo responsavel por mutar o weight de cada cromossoma
+     * @throws EdgesNotFoundException - se as edges não tiverem sido encontradas anteriormente
+     */
     public void mutatePopulationWeight() throws EdgesNotFoundException {
         if(!isAcabouEdgeNodes())
             throw new EdgesNotFoundException("As Edges não foram totalmente encontradas !");
@@ -391,6 +469,9 @@ public class Population {
         }
     }
 
+    /**
+     * Metodo responsavel por decidir se incrementa ou resta o countador para o criterio de paragem
+     */
     private void fitnessRepCounter(double fitness){
         if(fitness != getRepFitness()) {
             setRepFitness(fitness);

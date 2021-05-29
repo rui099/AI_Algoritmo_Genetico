@@ -58,23 +58,40 @@ public class DNA_Edge implements Comparable<DNA_Edge> {
         this.fitness = fitness;
     }
 
+    /**
+     * Metodo responsavel por gerar um intiro de 0 até upperbound
+     * @return  um numero inteiro de 0 a upperbound
+     */
+
     private int randInt(int upperbound) {
         Random rand = new Random(); //instance of random class
         int int_random = rand.nextInt(upperbound);
         return int_random;
     }
-
+    /**
+     * Metodo responsavel por retornar um node á sorte da lista de nodes
+     * @return a referencia de um node da lista de nodes
+     */
     private INode randNode (){
         INode node =  nodelist.get(randInt(nodelist.size()));
         return node;
     }
 
+    /**
+     * Metodo responsavel por gerar um inteiro de 0 a 3
+     * @return uma inteiro de 0 a 3
+     */
     public int ranWeight(){
         Random rand = new Random();
         int int_random = rand.nextInt(3) +1;
         return int_random;
     }
 
+    /**
+     * Metodo responsavel por adicionar uma percentagem do numero total de edges á lista de edges, estas
+     * edges nunca são repetidas.
+     * @param percentagem - percentagem no numero de edges a ser criado
+     */
     public void DNA(double percentagem){
         int nNodes = getNodelist().size();
         //int nEdges = eng.getVirusConfiguration().getN_edges();
@@ -95,6 +112,12 @@ public class DNA_Edge implements Comparable<DNA_Edge> {
         }
     }
 
+    /**
+     * Metodo responsavel por verificar se existe uma edge entre os 2 nodes que recebe
+     * @param node - node recebido para verificar se existe edge
+     * @param node2 - node recebido para verificar se existe edge
+     * @return true se existe a edges e false se não existe
+     */
     public boolean containsEdge(INode node, INode node2){
         boolean contains = false;
         Iterator iterator = edgeList.iterator();
@@ -107,6 +130,11 @@ public class DNA_Edge implements Comparable<DNA_Edge> {
         return contains;
     }
 
+    /**
+     * Metodo responsavel por criar uma solução de teste com a lista de nodes e a lista de edges,
+     * feito com a intenção de não repetir codigo.
+     * @return uma instancia de Result pronto a ser usada.
+     */
     private Result getResultToTest() {
         ISolution solutionNodes = new impl.Solution(getNodelist(), getEdgeList(), eng.getVirusConfiguration());
         eng.testSolution(solutionNodes);
@@ -114,6 +142,10 @@ public class DNA_Edge implements Comparable<DNA_Edge> {
         return result;
     }
 
+    /**
+     * Metodo responsavel por calcular o fitness para as edges, quando calculado insere o valor na
+     * variavel responsabel por guardar o valor do fitness
+     */
     public void calcEdgeNodeFitness() {
         Result result = getResultToTest();
 
@@ -127,7 +159,11 @@ public class DNA_Edge implements Comparable<DNA_Edge> {
         }
         setFitness(count_ok);
     }
-
+    /**
+     * Metodo responsavel por mutar as edges, itera a lista de edges e se um numero Double random for maior que
+     * a frequencia de mutação a edges é mutada
+     * @param mutationFreq - frequencia de mutação
+     */
     public void mutateEdgeNodes(double mutationFreq) {
 
         for (int i = 0; i < getEdgeList().size(); i++) {
@@ -143,12 +179,20 @@ public class DNA_Edge implements Comparable<DNA_Edge> {
         }
     }
 
+    /**
+     * Metodo responsavel por gerar um numero do tipo Double de 0 a 1
+     * @return numero de zero a 1
+     */
     public double randomDouble() {
         Random rn = new Random();
         double result = rn.nextDouble() * 1;
         return result;
     }
 
+    /**
+     * Metodo responsavel por retornar um clone da lista de edges
+     * @return novaLista - clone da lista de nodes
+     */
     public ArrayList<IEdge> cloneList() {
         ArrayList<IEdge> novaLista = new ArrayList<>();
         Iterator iterator = getEdgeList().iterator();
@@ -159,11 +203,20 @@ public class DNA_Edge implements Comparable<DNA_Edge> {
         return novaLista;
     }
 
+    /**
+     * Metodo responsavel por fazer um update á visualização do virus a ser usado.
+     */
     public void updateVisualization() throws VisualizationNotFoundException {
         ISolution solutionNodes = new impl.Solution(getNodelist(), getEdgeList(), eng.getVirusConfiguration());
         eng.updateVisualization("viz1", solutionNodes);
     }
 
+    /**
+     * Metodo responsavel por fazer um crossOver uniforme das edges em que há uma probabilidade de 50%
+     * de uma edge de cada DNA passar para a procxima geração.
+     * @param outroDna - DNA a ser misturado.
+     * @return DNA com o crossOver feito
+     */
     public DNA_Edge crossOver(DNA_Edge outroDna){
         double randD = randomDouble();
         DNA_Edge newDna = new DNA_Edge(getNodelist(),cloneList(),eng);
@@ -180,6 +233,9 @@ public class DNA_Edge implements Comparable<DNA_Edge> {
         return newDna;
     }
 
+    /**
+     * Metodo responsavel por remover edges que não estão corrretas.
+     */
     public void removeUselessEdgeNodes() {
         Result result = getResultToTest();
         int i = 0;
@@ -193,7 +249,10 @@ public class DNA_Edge implements Comparable<DNA_Edge> {
             i++;
         }
     }
-
+    /**
+     * Metodo responsavel por calcular o fitness para o Weight das edges, quando calculado insere o valor na
+     * variavel responsabel por guardar o valor do fitness
+     */
     public void calcWeightFitness() {
         Result result = getResultToTest();
         double count_ok = 0;
@@ -207,6 +266,11 @@ public class DNA_Edge implements Comparable<DNA_Edge> {
         setFitness(count_ok);
     }
 
+    /**
+     * Metodo responsavel por mutar o weight das edges, itera a lista de edges e se um numero Double random for maior que
+     * a frequencia de mutação o weight da edge é mutado
+     * @param mutationFreq - frequencia de mutação
+     */
     public void mutateWeight(double mutationFreq) {
         Iterator it = getEdgeList().iterator();
         while (it.hasNext()) {
