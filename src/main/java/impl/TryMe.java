@@ -33,7 +33,7 @@ public class TryMe
 
     public static void main(String args[]) throws VisualizationNotFoundException, VirusDoesNotExistException, IOException, ElementNotFoundException, XYNotFoundException, IncompleteNodesException, EdgesNotFoundException {
 
-       /* // workbook object
+       // workbook object
         HSSFWorkbook workbook = new HSSFWorkbook();
 
         // spreadsheet object
@@ -46,7 +46,7 @@ public class TryMe
         Map<Integer, Object[]> virusData
                 = new TreeMap<Integer, Object[]>();
         for(int i =3; i < 103;i++) {
-            System.out.println(i);*/
+            System.out.println(i);
     int virus_id = 4;
 
     //1- Initialize the Engine for Virus number 1
@@ -58,7 +58,7 @@ public class TryMe
     //3- Get the configuration of the Virus and print it to know what we are up against...
     VirusConfiguration conf = eng.getVirusConfiguration();
     //System.out.println("\n\nTrying to find the cure for: " + conf);
-    Population pp = new Population(eng, 20, 3, 0.13  , 30);
+    Population pp = new Population(eng, 10, 3, 0.20  , 30);
     int counter = 0;
     while (!pp.isAcabouNodeXY()) {
         pp.genNodeXYPop();
@@ -119,7 +119,7 @@ public class TryMe
 
    // ISolution solution = new impl.Solution(nodes, edges, conf);
    // eng.submit(solution, "só somar");
-/*
+
 
 
     virusData.put(i, new Object[]{counter, counter2, counter3, counter4});
