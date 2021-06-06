@@ -1,4 +1,4 @@
-package main.java.impl;
+package main.Alg_Genetico;
 
 import engine.Engine;
 import engine.exceptions.VisualizationNotFoundException;
@@ -6,9 +6,8 @@ import engine.interfaces.IEdge;
 import engine.interfaces.INode;
 import engine.interfaces.ISolution;
 import engine.results.EdgeResult;
-import engine.results.NodeResult;
 import engine.results.Result;
-import main.Exceptions.XYNotFoundException;
+import main.java.impl.GraphEdge;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -284,7 +283,7 @@ public class DNA_Edge implements Comparable<DNA_Edge> {
 
     @Override
     public String toString() {
-       String s = "DNA_Edge{" +
+        String s = "DNA_Edge{" +
                 "fitness=" + fitness +
                 "}\n";
         /*Iterator it = getEdgeList().iterator();

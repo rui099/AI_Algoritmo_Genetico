@@ -1,4 +1,4 @@
-package main.java.impl;
+package main.Alg_Genetico;
 
 import engine.Engine;
 import engine.enums.NodeType;
@@ -8,6 +8,7 @@ import engine.interfaces.INode;
 import engine.interfaces.ISolution;
 import engine.results.NodeResult;
 import engine.results.Result;
+import main.java.impl.GraphNode;
 
 import java.util.ArrayList;
 import java.util.Iterator;

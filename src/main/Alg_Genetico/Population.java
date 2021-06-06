@@ -1,4 +1,4 @@
-package main.java.impl;
+package main.Alg_Genetico;
 
 import engine.Engine;
 import engine.exceptions.VisualizationNotFoundException;
@@ -148,12 +148,13 @@ public class Population {
             if (!isAcabouNodeXY()) {
                 dna.calcNodeXYFitness();
                 if(getRepCounter() == getNumMaxRep()){
-                //if (dna.getFitness() == 1 && getBestXY() == null) {
+                    //if (dna.getFitness() == 1 && getBestXY() == null) {
                     endNodeSearch(dna);
                 }
             } //calcular fitness do tipo
         }
     }
+
     /**
      * Metodo responsavel por calcular o fitness dos types de todos os cromossomas
      * @throws @XYNotFoundException - o X e Y dos nodes tem que ser encontrado primeiro.
@@ -168,7 +169,7 @@ public class Population {
             DNA_Node dna = (DNA_Node) iterator.next();
             dna.calcNodeTypeFitness();
             if(getRepCounter() == getNumMaxRep()){
-            //if(dna.getFitness() == 1 && getcompleteNodeDNA() == null) {
+                //if(dna.getFitness() == 1 && getcompleteNodeDNA() == null) {
                 setAcabouNodeType(true);
                 setcompleteNodeDNA(populationNodeList.get(0));
             }
@@ -271,18 +272,18 @@ public class Population {
         if(!isAcabouNodeXY())
             throw new XYNotFoundException("O X e Y dos nodes têm que ser encontrados antes do tipo");
 
-            ArrayList<DNA_Node> elitismo = elitismoNodeList();
-            int upperbound = elitismo.size();
+        ArrayList<DNA_Node> elitismo = elitismoNodeList();
+        int upperbound = elitismo.size();
 
-            for (int i = 0; i < this.populationNodeList.size(); i++) {
-                if (i < elitismoSize) {
-                    populationNodeList.set(i, elitismo.get(i));
-                } else {
-                    int randnum = randInt(upperbound);
-                    DNA_Node novoDNA = new DNA_Node(eng, elitismo.get(randnum).cloneList());
-                    populationNodeList.set(i, novoDNA);
-                }
+        for (int i = 0; i < this.populationNodeList.size(); i++) {
+            if (i < elitismoSize) {
+                populationNodeList.set(i, elitismo.get(i));
+            } else {
+                int randnum = randInt(upperbound);
+                DNA_Node novoDNA = new DNA_Node(eng, elitismo.get(randnum).cloneList());
+                populationNodeList.set(i, novoDNA);
             }
+        }
     }
 
     /**
@@ -358,8 +359,8 @@ public class Population {
             dna.calcEdgeNodeFitness();
             //verificar se chegou ao fim
             if(getRepCounter() == getNumMaxRep()){
-            //if (dna.getFitness() == 1 && getBestNodeEdges() == null) {
-                    endNodeEdgeSearch(populationEdgeList.get(0));
+                //if (dna.getFitness() == 1 && getBestNodeEdges() == null) {
+                endNodeEdgeSearch(populationEdgeList.get(0));
             }
         }
 
@@ -450,7 +451,7 @@ public class Population {
             DNA_Edge edge = (DNA_Edge) iterator.next();
             edge.calcWeightFitness();
             if(getRepCounter() == getNumMaxRep()){
-            //if(edge.getFitness() == 1 && getCompleteEdges() == null) {
+                //if(edge.getFitness() == 1 && getCompleteEdges() == null) {
                 setAcabouEdgeWeights(true);
                 setCompleteEdges(populationEdgeList.get(0));
             }
